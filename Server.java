@@ -56,7 +56,7 @@ import java.io.*;
 	  
 	    public static void main(String args[]) 
 	    { 
-	        Server server = new Server(1070); 
+	        Server server = new Server(6000); 
 	    } 
 	} 
 
