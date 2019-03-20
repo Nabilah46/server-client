@@ -39,7 +39,6 @@
 	    } 
 	    send(sock , hello , strlen(hello) , 0 );
 	    printf("Hi\n"); 
-	    valread = read( sock , buffer, 1024); 
-	    printf("%s\n",buffer ); 
+	    
 	    return 0; 
 	} 
