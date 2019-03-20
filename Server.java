@@ -1,59 +1,33 @@
 import java.io.*;
-
 import java.net.*;
-
-class Server
-
+public class server
 {
+public static void main(String[] args)throws Exception
+{
+ServerSocket serversocket = new ServerSocket(8080);
+System.out.println("Server dah ready!");
+Socket sock = serversocket.accept();
+System.out.println("Waalaikummussalam");
 
-  public static void main(String[] args) throws Exception
-
-  {
-
-     Socket sock = new Socket("169.254.79.26", 9706);
-
-                               // reading from keyboard (keyRead object)
-
-     BufferedReader keyRead = new BufferedReader(new 
+BufferedReader keyRead = new BufferedReader(new 
 InputStreamReader(System.in));
+OutputStream ostream = sock.getOutputStream();
+PrintWriter pwrite = new PrintWriter(ostream,true);
 
-                              // sending to client (pwrite object)
-
-     OutputStream ostream = sock.getOutputStream(); 
-
-     PrintWriter pwrite = new PrintWriter(ostream, true);
-
-
-
-                              // receiving from server ( receiveRead  object)
-
-     InputStream istream = sock.getInputStream();
-
-     BufferedReader receiveRead = new BufferedReader(new 
+InputStream istream = sock.getInputStream();
+BufferedReader receiveRead = new BufferedReader(new 
 InputStreamReader(istream));
 
-
-
-     System.out.println("Hi ! :)");
-
-
-
-     String receiveMessage, sendMessage;               
-
-     while(true)
-
-     {
-
-        sendMessage = keyRead.readLine();  // keyboard reading
-
-        pwrite.println(sendMessage);       // sending to server
-
-        pwrite.flush();
-	
-	if((receiveMessage = receiveRead.readLine()) != null)
-	{
-		System.out.println("Server: " + receiveMessage);
-	}
+String receiveMessage,sendMessage;
+while(true)
+{
+if((receiveMessage=receiveRead.readLine())!=null)
+{
+System.out.println(receiveMessage);
+}
+sendMessage = keyRead.readLine();
+pwrite.println(sendMessage);
+pwrite.flush();
 }
 }
 }
