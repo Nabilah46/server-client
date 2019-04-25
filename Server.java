@@ -1,77 +1,59 @@
-import java.util.Scanner;
-
-import java.io.*;
-
 import java.net.*;
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+class SimpleServer{
 
-import java.net.Socket.*;
-
-
-class TCPClient {
-
- public static void main(String argv[]) throws IOException {
-
-  String sentence;
-
-  String modifiedSentence;
- 
-  Scanner n = new Scanner(System.in);
-
-  System.out.print("You want to ping or send message? [1-Message,2-Ping] \n");
-
-    int input = n.nextInt();
- 
- if(input == 1)
-{
-    
-    String ipAddress = "169.254.79.26"; 
-
-    InetAddress geek = InetAddress.getByName(ipAddress); 
-
-    System.out.println("Sending Ping Request to " + ipAddress); 
-
-    if (geek.isReachable(5000)) 
-
-      System.out.println("Host is reachable!"); 
-
-    else
-
-      System.out.println("Sorry!!!! Can't reach to host"); 
-
-}
-
-
-
-else
-{
-
-while(true)
-{
-BufferedReader inFromUser = new BufferedReader(new 
-InputStreamReader(System.in));
-
+    public static void main (String[] args)
+    {
+      try{      
+      //Defining/opening connection
+      ServerSocket srvr = new ServerSocket(5140);
+      Socket skt = srvr.accept();
+      
+      InputStreamReader bf = new InputStreamReader(skt.getInputStream());
+      BufferedReader in= new BufferedReader(bf);
+      PrintWriter out = new PrintWriter(skt.getOutputStream(),true);
+      Scanner s=new Scanner(System.in);
+      
+      Thread send=new Thread(new Runnable(){
+      String msg;
+      @Override
+      public void run(){
+            while(true){
   
-  Socket clientSocket = new Socket("169.254.60.171", 22000);
-
-DataOutputStream outToServer = new 
-DataOutputStream(clientSocket.getOutputStream());
-
-  BufferedReader inFromServer = new BufferedReader(new 
-InputStreamReader(clientSocket.getInputStream()));
-
-
-     sentence = inFromUser.readLine();
-   
-     outToServer.writeBytes(sentence);
-
-
-  modifiedSentence = inFromServer.readLine();
-
-  System.out.println("From Server: " + modifiedSentence);
-
-
-  clientSocket.close();
-}
-}
-}
+                  msg=s.nextLine();
+                  out.print(msg);
+                  out.flush();
+            }
+      }
+      });
+      send.start();
+      
+      Thread receive=new Thread(new Runnable(){
+      String msg;
+      @Override
+      public void run(){
+            while(true){
+                  try{
+                        msg=in.readLine();
+                  }catch(IOException e){
+                        e.printStackTrace();
+                  }
+                  System.out.print("From Client: "+msg);
+            }
+      }
+      });
+      receive.start();
+            
+      
+      
+      //closing connection
+      //out.close();
+      //skt.close();
+      //srvr.close();
+      }catch (IOException e){
+            e.printStackTrace();
+      }
+    }
 }
